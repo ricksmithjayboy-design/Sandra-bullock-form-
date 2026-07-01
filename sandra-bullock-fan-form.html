@@ -461,7 +461,7 @@
   <div class="divider"><span class="divider-star">✦</span></div>
 
   <div class="form-card" id="formCard">
-    <form id="fanForm" onsubmit="handleSubmit(event)">
+    <form id="fanForm">
 
       <!-- Personal Info -->
       <div class="section-label">Your Details</div>
@@ -615,17 +615,50 @@
 </div>
 
 <script>
-  function handleSubmit(e) {
+  document.getElementById('fanForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Collect form data
+    const formData = new FormData(this);
+    const data = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      email: formData.get('email'),
+      dateOfBirth: formData.get('dob'),
+      country: formData.get('country'),
+      fanSince: formData.get('fanSince'),
+      favoriteRole: formData.get('favRole'),
+      favoriteThings: formData.getAll('love'),
+      message: formData.get('message'),
+      instagram: formData.get('instagram'),
+      newsletter: formData.get('newsletter') === 'yes' ? true : false,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Store data in localStorage
+    const submissions = JSON.parse(localStorage.getItem('sandraFanSubmissions')) || [];
+    submissions.push(data);
+    localStorage.setItem('sandraFanSubmissions', JSON.stringify(submissions));
+    
+    // Log to console (for debugging)
+    console.log('Form submitted successfully:', data);
+    
+    // Show success message
     const form = document.getElementById('fanForm');
     const success = document.getElementById('successMsg');
     form.style.opacity = '0';
     form.style.transition = 'opacity 0.4s';
+    
     setTimeout(() => {
       form.style.display = 'none';
       success.style.display = 'block';
     }, 400);
-  }
+    
+    // Optional: Reset form after 3 seconds
+    setTimeout(() => {
+      location.reload();
+    }, 5000);
+  });
 </script>
 
 </body>
